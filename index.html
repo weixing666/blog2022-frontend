@@ -65,17 +65,12 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="#">首页</a></li>
 						<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-									aria-haspopup="true" aria-expanded="false">分类 <span class="caret"></span></a>
-								<ul class="dropdown-menu">
-									<li><a href="/cate.html?id=2">html</a></li>
-									<li><a href="/cate.html?id=2">css</a></li>
-									<li><a href="/cate.html?id=2">javascript</a></li>
-									<li role="separator" class="divider"></li>
-									<li><a href="/cate.html?id=2">mysql</a></li>
-									<li><a href="/cate.html?id=2">Linux</a></li>
-								</ul>
-							</li>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+								aria-haspopup="true" aria-expanded="false">分类 <span class="caret"></span></a>
+							<ul class="dropdown-menu" id="cate">
+								<!-- <li><a href="/cate.html?id=2">html</a></li> -->
+							</ul>
+						</li>
 						<li><a href="/tags.html">标签</a></li>
 						<li><a href="/about.html">关于我</a></li>
 					</ul>
@@ -85,85 +80,92 @@
 
 		<div class="content">
 			<h4>最新文章</h4>
-			<div class="artlist">
-				<div class='item row'>
+			<div class="artlist" id="article">
+				<!-- <div class='item row'>
 					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
+						<img src="https://dummyimage.com/200x100/000/fff/ alt="">
 					</div>
-					<div class="col-md-10">
+					<div class=" col-md-10">
 						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
 						<div class="title">这是介绍中vscode...</div>
 						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
 					</div>
 					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-
+				</div> -->
 			</div>
 		</div>
-		<button type="button" class="btn  btn-block">查看更多</button>
+		<button type="button" class="btn  btn-block" id="page">查看更多</button>
 		<hr>
 
 		<div class="footer" style="text-align:center;font-size: 14px; color: #999;margin:10px 0;">
 			首页 | 主站 | GitHub | created at 2020/02/4 | Powered by 汪玮
 		</div>
+		
 	</div>
 </body>
 <script src="./js/jquery.js"></script>
 <script src="./bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/layui/2.6.8/layui.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+
+<script type="text/javascript">
+	let page = 1
+	let lmimt = 5
+	let out = false
+	async function catedate() {
+		let result = await $.get("http://127.0.0.1:5000/api/cate")
+		let cate = ''
+		result = result.map(item => {
+			let { cate_name, cate_id } = item
+			cate += `<li><a href="/cate.html?id=${cate_id}">${item.cate_name}</a></li>`
+			return cate
+		});
+		$('#cate').html(cate)
+	}
+	async function article(page, lmimt) {
+		let result = await $.get(`http://127.0.0.1:5000/api/article?page=${page}&lmimt=${lmimt}`)
+		if (result.length === 0) {
+			layer.msg("已经见底啦")
+			out = true
+			return
+		}
+		
+		result = result.map(item => {
+			item.host = `http://127.0.0.1:5000/`
+			return item
+		})
+		let newcom = ''
+		result.forEach(item => {
+			let { id, cate_id, cate_name, username, title, add_date, pic, host } = item
+			add_date = moment(add_date).format('YYYY-MM-DD HH:mm:ss')
+			let picne = pic ? `${ host }${ pic }` : 'https://dummyimage.com/200x100/000/fff/'
+			newcom += `<div class='item row'>
+					<div class="col-md-2">
+						<a href="/detail.html?id=${id}"><img src='${host}${pic}' alt=""></a>
+					</div>
+					<div class=" col-md-10">
+						<div class="date ">作者：${username} 、 ${add_date} 、分类：${cate_name}</div>
+						<a href="/detail.html?id=${id}"><div class="title">${title}</div></a>
+						<div class="intro">${title}</div>
+					</div>
+					<hr>
+				</div>`
+		});
+		let oldcom = $('#article').html()
+		$('#article').html(oldcom + newcom)
+	}
+	catedate()
+	article(page, lmimt)
+
+	$('#page').click(function () {
+		if (out) {
+			layer.msg("不要在点了~")
+			return
+		}
+		page++
+		article(page, lmimt)
+	})
+</script>
+
 
 </html>

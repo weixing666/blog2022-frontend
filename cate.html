@@ -66,7 +66,6 @@
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="#">首页</a></li>
 						<li class="dropdown">
@@ -89,78 +88,22 @@
 		</nav>
 
 		<div>
-			<h4 class="crumbs" style="text-align:left;">当前位置：首页 / 所有分类 / 体育 </h4>
+			<h4 class="crumbs" style="text-align:left;">当前位置：<a href="/index.html">首页</a> / 所有分类 / 体育 </h4>
 		</div>
 
 		<div class="content">
 			<div class="artlist">
-				<div class='item row'>
+				<div class='item row' id="content">
 					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
+						<img src="${newpic}" alt="" style="width=80px;height:80px">
 					</div>
 					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
+						<div class="date ">作者：${username} 、 ${add_date} 、分类：${cate_name}</div>
+						<div class="title">${title}</div>
+						<div class="intro">${content}</div>
 					</div>
 					<hr>
 				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-				<div class='item row'>
-					<div class="col-md-2">
-						<img src="http://placehold.it/170x100/ff3333/ffffff?text=like%20you" alt="">
-					</div>
-					<div class="col-md-10">
-						<div class="date ">作者：admin 、 2019-12-08 、分类：前端</div>
-						<div class="title">这是介绍中vscode...</div>
-						<div class="intro">这是介绍中vscode这是介绍中vscode这是介绍中vscode...</div>
-					</div>
-					<hr>
-				</div>
-
 			</div>
 		</div>
 
@@ -174,5 +117,43 @@
 </body>
 <script src="./js/jquery.js"></script>
 <script src="./bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script>
+	let reg = /\?cate_id=(\d+)/
+	let [, cate_id] = location.search.match(reg)
+	async function cateAll() {
+		let result = await $.get("http://127.0.0.1:5000/api/cateAll", { cate_id })
+		let str = ''
+		result.forEach(item => {
+			let { add_date, author, cate_name, title, content, username, pic } = item
+			console.log(pic);
+			add_date = moment(add_date).format('YYYY-MM-DD HH:mm:ss')
+			let newpic = pic ? `http://127.0.0.1:5000/${pic}` : 'https://dummyimage.com/200x100/000/fff/'
+			str += `<div class="artlist">
+						<div class='item row' id="content">
+							<div class="col-md-2">
+								<img src="${newpic}" alt="" style="width=80px;height:80px">
+							</div>
+							<div class="col-md-10">
+								<div class="date ">作者：${username} 、 ${add_date} 、分类：${cate_name}</div>
+								<div class="title">${title}</div>
+								<div class="intro">${content}</div>
+							</div>
+							<hr>
+						</div>
+					</div>`
+		});
+
+		$('#content').html(str)
+	}
+
+	cateAll()
+</script>
+<style>
+	.p {
+		width: 80px;
+		height: ;
+	}
+</style>
 
 </html>
